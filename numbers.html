@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>الأرقام - الوصية الرقمية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body{font-family: 'Segoe UI', 'Tajawal', sans-serif; padding:20px}
+        header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+        .card{background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+        input{padding:10px;border:2px solid #e8f4ff;border-radius:8px;margin-bottom:10px;width:100%}
+        button{background:#4A90E2;color:#fff;padding:10px 14px;border:0;border-radius:8px;cursor:pointer}
+        ul{list-style:none;padding:0;margin-top:12px}
+        li{padding:10px;border-bottom:1px solid #f0f6ff}
+        nav a{margin-left:12px;color:#4A90E2;text-decoration:none}
+    </style>
+</head>
+<body>
+    <script src="auth.js"></script>
+    <script>requireAuth();</script>
+
+    <header>
+        <div>
+            <strong id="userDisplay"></strong>
+        </div>
+        <nav>
+            <a href="index.html">الصفحة الرئيسية</a>
+            <a href="record.html">تسجيل</a>
+            <a href="email.html">البريد</a>
+            <a href="#" id="logoutBtn">تسجيل خروج</a>
+        </nav>
+    </header>
+
+    <div class="card">
+        <h3>إدارة الأرقام</h3>
+        <form id="contactForm">
+            <input id="cname" placeholder="اسم الشخص" required />
+            <input id="cphone" placeholder="رقم الهاتف" required />
+            <button type="submit">إضافة</button>
+        </form>
+
+        <ul id="contactsList"></ul>
+    </div>
+
+    <script>
+        const user = AuthSystem.getUser();
+        document.getElementById('userDisplay').textContent = user ? user.name : 'ضيف';
+
+        const key = AuthSystem.storageKey('contacts');
+        function load() { return JSON.parse(localStorage.getItem(key) || '[]'); }
+        function save(v){ localStorage.setItem(key, JSON.stringify(v)); }
+
+        function render(){
+            const list = load();
+            const ul = document.getElementById('contactsList'); ul.innerHTML='';
+            list.forEach((c,i)=>{
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${c.name}</strong> - ${c.phone} <button data-i="${i}" style="float:left">حذف</button>`;
+                li.querySelector('button').addEventListener('click', ()=>{ list.splice(i,1); save(list); render(); });
+                ul.appendChild(li);
+            });
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            const name = document.getElementById('cname').value.trim();
+            const phone = document.getElementById('cphone').value.trim();
+            if(!name||!phone) return;
+            const list = load(); list.push({name,phone}); save(list); render();
+            this.reset();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function(e){ e.preventDefault(); AuthSystem.logout(); window.location.href='login.html'; });
+
+        render();
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>تسجيل - الوصية الرقمية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body{font-family: 'Segoe UI', 'Tajawal', sans-serif; background: linear-gradient(135deg,#4A90E2,#357ABD); min-height:100vh; display:flex; align-items:center; justify-content:center}
+        .card{background:#fff;padding:30px;border-radius:14px;max-width:420px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+        label{display:block;margin-bottom:6px;color:#1a3a5f}
+        input{width:100%;padding:12px;border-radius:8px;border:2px solid #e8f4ff;margin-bottom:14px}
+        button{background:#50E3C2;color:#fff;padding:12px 18px;border-radius:10px;border:none;cursor:pointer;width:100%}
+        .small{font-size:0.9rem;color:#5a7a9a;margin-top:10px;text-align:center}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 style="margin-bottom:12px">إنشاء حساب جديد</h2>
+        <form id="registerForm">
+            <label>الاسم الكامل</label>
+            <input id="name" required />
+            <label>البريد الإلكتروني</label>
+            <input id="email" type="email" required />
+            <label>كلمة المرور</label>
+            <input id="password" type="password" required />
+            <button type="submit"><i class="fas fa-user-plus"></i> تسجيل</button>
+        </form>
+        <div class="small">هل لديك حساب؟ <a href="login.html">تسجيل دخول</a></div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const res = AuthSystem.register(name, email, password);
+            if(res.success){
+                window.location.href = 'index.html';
+            } else {
+                alert(res.message || 'فشل التسجيل');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>تسجيل الفيديو - الوصية الرقمية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body{font-family: 'Segoe UI','Tajawal';padding:20px}
+        video{width:100%;max-width:640px;border-radius:8px;background:#000}
+        button{padding:10px 14px;border-radius:8px;border:0;background:#4A90E2;color:#fff;cursor:pointer;margin-left:8px}
+        nav a{margin-left:12px;color:#4A90E2;text-decoration:none}
+        .list-item{padding:10px;border-bottom:1px solid #f0f6ff}
+    </style>
+</head>
+<body>
+    <script src="auth.js"></script>
+    <script>requireAuth();</script>
+
+    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div><strong id="userDisplay"></strong></div>
+        <nav>
+            <a href="index.html">الصفحة الرئيسية</a>
+            <a href="numbers.html">الأرقام</a>
+            <a href="email.html">البريد</a>
+            <a href="#" id="logoutBtn">تسجيل خروج</a>
+        </nav>
+    </header>
+
+    <h3>تسجيل رسالة فيديو</h3>
+    <video id="preview" autoplay muted></video>
+    <div style="margin-top:8px">
+        <button id="start">ابدأ التسجيل</button>
+        <button id="stop" disabled>إيقاف</button>
+    </div>
+
+    <h4 style="margin-top:16px">التسجيلات</h4>
+    <div id="recordings"></div>
+
+    <script>
+        const user = AuthSystem.getUser(); document.getElementById('userDisplay').textContent = user ? user.name : 'ضيف';
+        const key = AuthSystem.storageKey('recordings');
+        const preview = document.getElementById('preview');
+        let stream, recorder, chunks = [];
+
+        async function startCamera(){ stream = await navigator.mediaDevices.getUserMedia({video:true,audio:true}); preview.srcObject = stream; }
+        startCamera().catch(()=>alert('يرجى السماح بالكاميرا لتمكين التسجيل'));
+
+        document.getElementById('start').addEventListener('click', function(){
+            if(!stream) return alert('الكاميرا غير متاحة');
+            recorder = new MediaRecorder(stream);
+            chunks = [];
+            recorder.ondataavailable = e=>chunks.push(e.data);
+            recorder.onstop = saveRecording;
+            recorder.start();
+            this.disabled = true; document.getElementById('stop').disabled = false;
+        });
+
+        document.getElementById('stop').addEventListener('click', function(){ recorder && recorder.state !== 'inactive' && recorder.stop(); this.disabled = true; document.getElementById('start').disabled = false; });
+
+        function saveRecording(){
+            const blob = new Blob(chunks, {type: 'video/webm'});
+            const reader = new FileReader();
+            reader.onload = () => {
+                const arr = JSON.parse(localStorage.getItem(key) || '[]');
+                arr.unshift({ dataUrl: reader.result, date: new Date().toISOString() });
+                localStorage.setItem(key, JSON.stringify(arr));
+                render();
+            };
+            reader.readAsDataURL(blob);
+        }
+
+        function render(){ const container = document.getElementById('recordings'); container.innerHTML = ''; const arr = JSON.parse(localStorage.getItem(key) || '[]'); arr.forEach((r,i)=>{ const div = document.createElement('div'); div.className='list-item'; div.innerHTML = `<video controls src="${r.dataUrl}" style="width:100%;max-width:360px"></video><div style="margin-top:6px"><button data-i="${i}">حذف</button> <a href="${r.dataUrl}" download="recording-${i}.webm">تحميل</a></div>`; div.querySelector('button').addEventListener('click', ()=>{ arr.splice(i,1); localStorage.setItem(key, JSON.stringify(arr)); render(); }); container.appendChild(div); }); }
+
+        document.getElementById('logoutBtn').addEventListener('click', function(e){ e.preventDefault(); AuthSystem.logout(); window.location.href='login.html'; });
+        render();
+    </script>
+</body>
+</html>

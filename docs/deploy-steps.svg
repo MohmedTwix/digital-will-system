@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1400" viewBox="0 0 1000 1400">
+  <style>
+    .bg{fill:#f6f9ff}
+    .card{fill:#fff;stroke:#e2e8f0;stroke-width:1;rx:12}
+    .title{font-family: 'Tajawal', 'Segoe UI', sans-serif; font-size:28px; fill:#0f172a; font-weight:700}
+    .step-title{font-family: 'Tajawal', 'Segoe UI', sans-serif; font-size:20px; fill:#0f172a; font-weight:700}
+    .text{font-family: 'Tajawal', 'Segoe UI', sans-serif; font-size:16px; fill:#334155}
+    .mono{font-family: monospace; font-size:15px; fill:#0f172a}
+    .badge{fill:#4f46e5; color:#fff; font-size:14px}
+    .arrow{stroke:#cbd5e1;stroke-width:2;fill:none}
+  </style>
+
+  <rect class="bg" x="0" y="0" width="1000" height="1400"/>
+
+  <g transform="translate(60,40)">
+    <rect class="card" x="0" y="0" width="880" height="120" rx="14"/>
+    <text class="title" x="40" y="70">خطوات سريعة لنشر المشروع على GitHub وRender</text>
+  </g>
+
+  <!-- Step 1 -->
+  <g transform="translate(60,180)">
+    <rect class="card" x="0" y="0" width="880" height="220" rx="12"/>
+    <text class="step-title" x="30" y="45">1. أنشئ مستودعًا على GitHub</text>
+    <text class="text" x="30" y="80">- افتح https://github.com → New repository → أدخل اسم (مثلاً: <tspan class="mono">digital-will-system</tspan>)</text>
+    <text class="text" x="30" y="105">- لا تختَر "Initialize with README" إذا كان المشروع محليًا بالفعل</text>
+    <circle cx="820" cy="40" r="22" fill="#0ea5a2"/>
+    <text class="mono" x="808" y="46" fill="#fff">1</text>
+  </g>
+
+  <!-- arrow -->
+  <path class="arrow" d="M500 400 L500 440"/>
+
+  <!-- Step 2 -->
+  <g transform="translate(60,460)">
+    <rect class="card" x="0" y="0" width="880" height="280" rx="12"/>
+    <text class="step-title" x="30" y="45">2. اربط المشروع محليًا وادفعه</text>
+    <text class="text" x="30" y="85">افتح الطرفية داخل مجلد المشروع ثم شغّل الأوامر التالية:</text>
+
+    <rect x="30" y="100" width="820" height="130" rx="8" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text class="mono" x="50" y="135">git init</text>
+    <text class="mono" x="50" y="160">git add .</text>
+    <text class="mono" x="50" y="185">git commit -m "initial"</text>
+    <text class="mono" x="50" y="210">git remote add origin https://github.com/YOURUSER/digital-will-system.git</text>
+    <text class="mono" x="50" y="235">git push -u origin main</text>
+
+    <circle cx="820" cy="40" r="22" fill="#0ea5a2"/>
+    <text class="mono" x="808" y="46" fill="#fff">2</text>
+  </g>
+
+  <path class="arrow" d="M500 760 L500 800"/>
+
+  <!-- Step 3 -->
+  <g transform="translate(60,820)">
+    <rect class="card" x="0" y="0" width="880" height="340" rx="12"/>
+    <text class="step-title" x="30" y="45">3. أنشر على Render (أو مزود مماثل)</text>
+    <text class="text" x="30" y="80">- أنشئ حساب على https://render.com</text>
+    <text class="text" x="30" y="105">- New → Web Service → اختر GitHub repo الخاص بك → اضبط:</text>
+    <text class="text" x="60" y="135">• Build Command: <tspan class="mono">npm install</tspan></text>
+    <text class="text" x="60" y="160">• Start Command: <tspan class="mono">npm start</tspan></text>
+    <text class="text" x="30" y="195">- اضف متغير البيئة <tspan class="mono">MONGODB_URI</tspan> بقيمة الاتصال من Atlas</text>
+    <text class="text" x="30" y="225">- اضغط Deploy وانتظر نجاح النشر ثم افتح الرابط العام</text>
+
+    <circle cx="820" cy="40" r="22" fill="#0ea5a2"/>
+    <text class="mono" x="808" y="46" fill="#fff">3</text>
+  </g>
+
+  <path class="arrow" d="M500 1160 L500 1200"/>
+
+  <!-- Step 4 -->
+  <g transform="translate(60,1240)">
+    <rect class="card" x="0" y="0" width="880" height="120" rx="12"/>
+    <text class="step-title" x="30" y="45">4. تحقق وأنهِ الإعداد</text>
+    <text class="text" x="30" y="80">- افتح الرابط الذي أعطاه Render → سجّل دخولًا في التطبيق → تحقق من عمل الاتصالات (DB، تسجيل، رفع ملفات)</text>
+    <circle cx="820" cy="40" r="22" fill="#0ea5a2"/>
+    <text class="mono" x="808" y="46" fill="#fff">4</text>
+  </g>
+
+  <!-- footer -->
+  <text class="text" x="60" y="1368">تحتاج مساعدة في رفع المستودع إلى GitHub أو إعداد متغيرات البيئة في Render؟ أخبرني وسأوجّهك خطوة بخطوة.</text>
+
+</svg>

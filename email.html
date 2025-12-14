@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>البريد - الوصية الرقمية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body{font-family: 'Segoe UI','Tajawal';padding:20px}
+        .card{background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+        input,textarea{width:100%;padding:10px;border:2px solid #e8f4ff;border-radius:8px;margin-bottom:10px}
+        button{background:#50E3C2;color:white;padding:10px 14px;border:0;border-radius:8px;cursor:pointer}
+        nav a{margin-left:12px;color:#4A90E2;text-decoration:none}
+    </style>
+</head>
+<body>
+    <script src="auth.js"></script>
+    <script>requireAuth();</script>
+
+    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div><strong id="userDisplay"></strong></div>
+        <nav>
+            <a href="index.html">الصفحة الرئيسية</a>
+            <a href="numbers.html">الأرقام</a>
+            <a href="record.html">تسجيل</a>
+            <a href="#" id="logout">تسجيل خروج</a>
+        </nav>
+    </header>
+
+    <div class="card">
+        <h3>إنشاء بريد / مسودة</h3>
+        <form id="emailForm">
+            <input id="to" placeholder="إلى: البريد الإلكتروني" required />
+            <input id="subject" placeholder="الموضوع" />
+            <textarea id="body" rows="6" placeholder="نص الرسالة"></textarea>
+            <button type="submit">حفظ كمسودة</button>
+            <button type="button" id="sendBtn" style="margin-left:8px;background:#4A90E2">فتح في البريد</button>
+        </form>
+
+        <h4 style="margin-top:16px">المسودات</h4>
+        <ul id="drafts" style="list-style:none;padding:0"></ul>
+    </div>
+
+    <script>
+        const user = AuthSystem.getUser(); document.getElementById('userDisplay').textContent = user ? user.name : 'ضيف';
+        const key = AuthSystem.storageKey('emails');
+        function load(){ return JSON.parse(localStorage.getItem(key)||'[]'); }
+        function save(v){ localStorage.setItem(key, JSON.stringify(v)); }
+
+        function render(){ const ul=document.getElementById('drafts'); ul.innerHTML=''; load().forEach((d,i)=>{ const li=document.createElement('li'); li.style.padding='10px'; li.style.borderBottom='1px solid #f0f6ff'; li.innerHTML=`<strong>${d.to}</strong> — ${d.subject||'(بدون موضوع)'} <div style="margin-top:6px">${d.body ? d.body.substring(0,120) : ''}</div><div style="margin-top:6px"><button data-i="${i}">حذف</button></div>`; li.querySelector('button').addEventListener('click',()=>{ const arr=load(); arr.splice(i,1); save(arr); render();}); ul.appendChild(li); }); }
+
+        document.getElementById('emailForm').addEventListener('submit', function(e){ e.preventDefault(); const to=document.getElementById('to').value.trim(); const subject=document.getElementById('subject').value.trim(); const body=document.getElementById('body').value.trim(); const arr=load(); arr.unshift({to,subject,body,date:new Date().toISOString()}); save(arr); render(); this.reset(); });
+
+        document.getElementById('sendBtn').addEventListener('click', function(){ const to=document.getElementById('to').value.trim(); const subject=encodeURIComponent(document.getElementById('subject').value.trim()); const body=encodeURIComponent(document.getElementById('body').value.trim()); if(!to) return alert('أدخل بريد المستلم'); window.location.href = `mailto:${to}?subject=${subject}&body=${body}`; })
+
+        document.getElementById('logout').addEventListener('click', function(e){ e.preventDefault(); AuthSystem.logout(); window.location.href='login.html'; });
+
+        render();
+    </script>
+</body>
+</html>

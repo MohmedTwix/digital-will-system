@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الوصية الرقمية - نظام المصادقة المتكامل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== الأساسيات ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Tajawal', sans-serif;
+            color: #1a3a5f;
+            min-height: 100vh;
+        }
+        
+        /* ===== صفحة تسجيل الدخول ===== */
+        .login-page {
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo i {
+            font-size: 3.5rem;
+            color: #4A90E2;
+            margin-bottom: 15px;
+        }
+        
+        .logo h1 {
+            color: #1a3a5f;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .logo p {
+            color: #5a7a9a;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a3a5f;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5a7a9a;
+        }
+        
+        .input-with-icon input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e8f4ff;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #f8fbff;
+        }
+        
+        .input-with-icon input:focus {
+            border-color: #4A90E2;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.3);
+        }
+        
+        .demo-info {
+            background: #f8fbff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: center;
+            border: 2px dashed #4A90E2;
+        }
+        
+        .demo-accounts {
+            text-align: right;
+            margin-top: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .demo-account {
+            padding: 8px 0;
+            border-bottom: 1px solid #e8f4ff;
+            color: #5a7a9a;
+        }
+        
+        .demo-account:last-child {
+            border-bottom: none;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border-right: 4px solid #c62828;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* ===== صفحة لوحة التحكم ===== */
+        .dashboard-page {
+            display: none;
+            background: linear-gradient(135deg, #f8fbff 0%, #e8f4ff 100%);
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            color: white;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+        
+        .user-details h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .user-details p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .welcome-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e8f4ff;
+        }
+        
+        .welcome-section h1 {
+            color: #1a3a5f;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .welcome-section h1 i {
+            color: #50E3C2;
+        }
+        
+        .progress-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            flex: 1;
+            min-width: 200px;
+            background: #f8fbff;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #4A90E2;
+        }
+        
+        .stat-box h3 {
+            color: #5a7a9a;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a3a5f;
+        }
+        
+        .options-section {
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            color: #1a3a5f;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .option-card {
+            background: white;
+            border-radius: 18px;
+            padding: 35px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e8f4ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-10px);
+            border-color: #4A90E2;
+            box-shadow: 0 15px 35px rgba(74, 144, 226, 0.2);
+        }
+        
+        .option-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4A90E2, #50E3C2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .option-card h3 {
+            color: #1a3a5f;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .option-card p {
+            color: #5a7a9a;
+            line-height: 1.6;
+        }
+        
+        .inspection-status {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e8f4ff;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .status-dot {
+            width: 15px;
+            height: 15px;
+            background: #50E3C2;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .inspection-details {
+            background: #f8fbff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .nav-btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 200px;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #4A90E2;
+            border: 2px solid #4A90E2;
+        }
+        
+        .btn-secondary:hover {
+            background: #f0f7ff;
+            transform: translateY(-3px);
+        }
+        
+        .dashboard-footer {
+            text-align: center;
+            padding: 30px;
+            color: #5a7a9a;
+            border-top: 1px solid #e8f4ff;
+            margin-top: 50px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-right: 5px solid #50E3C2;
+            display: none;
+            z-index: 1000;
+            max-width: 400px;
+        }
+        
+        .notification.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-stats {
+                flex-direction: column;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .login-container {
+                padding: 30px 25px;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ====================== -->
+    <!-- صفحة تسجيل الدخول -->
+    <!-- ====================== -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="logo">
+                <i class="fas fa-database"></i>
+                <h1>الوصية الرقمية</h1>
+                <p>نظام الوصية الذكية - سجل دخولك للبدء</p>
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">حدث خطأ ما. حاول مرة أخرى.</span>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                    <div class="input-with-icon">
+                        <input type="email" id="email" placeholder="أدخل بريدك الإلكتروني" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <div class="input-with-icon">
+                        <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+                        <i class="fas fa-key"></i>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn" id="loginButton">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>تسجيل الدخول</span>
+                </button>
+            </form>
+            
+            <div class="demo-info">
+                <h3><i class="fas fa-vial"></i> نسخة تجريبية</h3>
+                <p>جرب أي من هذه الحسابات:</p>
+                
+                <div class="demo-accounts">
+                    <div class="demo-account">
+                        <strong>ahmed@example.com</strong> - أي كلمة مرور
+                    </div>
+                    <div class="demo-account">
+                        <strong>admin@digital.com</strong> - أي كلمة مرور
+                    </div>
+                    <div class="demo-account">
+                        <strong>user@test.com</strong> - أي كلمة مرور
+                    </div>
+                </div>
+                
+                <p style="margin-top: 15px; font-size: 0.9rem; color: #7F8C8D;">
+                    <i class="fas fa-info-circle"></i> للتطوير فقط. سيتم ربطها بقاعدة البيانات لاحقاً
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ====================== -->
+    <!-- صفحة لوحة التحكم -->
+    <!-- ====================== -->
+    <div id="dashboardPage" class="dashboard-page">
+        <!-- الهيدر -->
+        <header class="dashboard-header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <h2 id="user-name">أحمد محمد</h2>
+                    <p id="user-email">ahmed@example.com</p>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
+        </header>
+        
+        <!-- المحتوى الرئيسي -->
+        <div class="dashboard-container">
+            <!-- قسم الترحيب -->
+            <section class="welcome-section">
+                <h1><i class="fas fa-tachometer-alt"></i> لوحة التحكم - الوصية الرقمية</h1>
+                <p>مرحباً بعودتك! هنا يمكنك إدارة وصيتك الرقمية وإضافة جهات الاتصال وتسجيل رسائلك.</p>
+                
+                <div class="progress-stats">
+                    <div class="stat-box">
+                        <h3>جهات الاتصال المضافة</h3>
+                        <div class="stat-value" id="contacts-count">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <h3>الرسائل المسجلة</h3>
+                        <div class="stat-value" id="messages-count">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <h3>حالة النظام</h3>
+                        <div class="stat-value" style="color: #50E3C2;">نشط</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- نظام التفتيش -->
+            <section class="inspection-status">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <h3 class="section-title"><i class="fas fa-robot"></i> نظام التفتيش الذكي</h3>
+                </div>
+                <p>نظامنا يراقب حالتك تلقائياً. سيصلك رسالة تفتيش بعد:</p>
+                
+                <div class="inspection-details">
+                    <p><i class="far fa-clock" style="color: #4A90E2;"></i> <strong>الموعد القادم:</strong> <span id="next-inspection">6 أشهر</span></p>
+                    <p><i class="fas fa-sms" style="color: #50E3C2;"></i> <strong>آخر رسالة:</strong> <span id="last-message">لم ترسل بعد</span></p>
+                    <p><i class="fas fa-shield-alt" style="color: #4A90E2;"></i> <strong>الحالة:</strong> <span style="color: #50E3C2; font-weight: bold;">نظام التفتيش نشط</span></p>
+                </div>
+            </section>
+            
+            <!-- خيارات الإضافة -->
+            <section class="options-section">
+                <h3 class="section-title"><i class="fas fa-plus-circle"></i> اختر ما تريد إضافته</h3>
+                
+                <div class="options-grid">
+                    <!-- خيار 1: أرقام الهواتف -->
+                    <div class="option-card" onclick="goToAddContacts('phone')">
+                        <div class="option-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div>
+                            <h3>📱 أرقام الهواتف</h3>
+                            <p>أضف أرقام هواتف مع مفاتيح الدول. اختر الدولة وأدخل الرقم واسم الشخص.</p>
+                        </div>
+                        <div style="color: #4A90E2; font-weight: bold; margin-top: 10px;">
+                            <i class="fas fa-arrow-left"></i> انقر للإضافة
+                        </div>
+                    </div>
+                    
+                    <!-- خيار 2: فيسبوك/ماسنجر -->
+                    <div class="option-card" onclick="goToAddContacts('social')">
+                        <div class="option-icon">
+                            <i class="fab fa-facebook-messenger"></i>
+                        </div>
+                        <div>
+                            <h3>👥 فيسبوك / ماسنجر</h3>
+                            <p>أضف حسابات فيسبوك أو ماسنجر. أدخل رابط الحساب أو اسم المستخدم.</p>
+                        </div>
+                        <div style="color: #4A90E2; font-weight: bold; margin-top: 10px;">
+                            <i class="fas fa-arrow-left"></i> انقر للإضافة
+                        </div>
+                    </div>
+                    
+                    <!-- خيار 3: البريد الإلكتروني -->
+                    <div class="option-card" onclick="goToAddContacts('email')">
+                        <div class="option-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h3>📧 عناوين البريد</h3>
+                            <p>أضف عناوين بريد إلكتروني. ستصل الرسائل إلى صندوق الوارد مباشرة.</p>
+                        </div>
+                        <div style="color: #4A90E2; font-weight: bold; margin-top: 10px;">
+                            <i class="fas fa-arrow-left"></i> انقر للإضافة
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- أزرار التنقل -->
+            <div class="navigation-buttons">
+                <button class="nav-btn btn-secondary" onclick="viewContacts()">
+                    <i class="fas fa-eye"></i> عرض جهات الاتصال المضافة
+                </button>
+                
+                <button class="nav-btn btn-primary" onclick="goToRecordMessages()">
+                    <i class="fas fa-microphone"></i> الانتقال لتسجيل الرسائل
+                </button>
+            </div>
+        </div>
+        
+        <!-- الفوتر -->
+        <footer class="dashboard-footer">
+            <p><i class="fas fa-database"></i> البيانات مخزنة في MongoDB بشكل آمن ومشفر</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">© 2025 نظام الوصية الرقمية • نظام التفتيش التلقائي</p>
+        </footer>
+        
+        <!-- إشعارات -->
+        <div class="notification" id="notification">
+            <div id="notification-message">رسالة النظام</div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // نظام المصادقة المركزي
+        // ============================================
+        
+        const AuthSystem = {
+            currentUser: null,
+            
+            // تحقق إذا كان المستخدم مسجلاً
+            isAuthenticated: function() {
+                const userData = localStorage.getItem('currentUser');
+                if (userData) {
+                    this.currentUser = JSON.parse(userData);
+                    return true;
+                }
+                return false;
+            },
+            
+            // تسجيل الدخول
+            login: function(email, password) {
+                // في التطبيق الحقيقي: هنا اتصال مع الخادم
+                // للنسخة التجريبية: نقبل أي بيانات
+                
+                const user = {
+                    id: Date.now(),
+                    name: this.extractNameFromEmail(email),
+                    email: email,
+                    loginTime: new Date().toISOString()
+                };
+                
+                // حفظ بيانات المستخدم
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                this.currentUser = user;
+                
+                return { success: true, user: user };
+            },
+            
+            // تسجيل الخروج
+            logout: function() {
+                localStorage.removeItem('currentUser');
+                this.currentUser = null;
+            },
+            
+            // استخراج الاسم من البريد
+            extractNameFromEmail: function(email) {
+                const username = email.split('@')[0];
+                return username.charAt(0).toUpperCase() + username.slice(1);
+            },
+            
+            // جلب بيانات المستخدم
+            getUser: function() {
+                return this.currentUser;
+            }
+        };
+        
+        // ============================================
+        // بيانات التطبيق
+        // ============================================
+        
+        let appData = {
+            user: {
+                name: "أحمد محمد",
+                email: "ahmed@example.com"
+            },
+            contacts: [],
+            messages: [],
+            nextInspection: "2025-06-14",
+            inspectionActive: true
+        };
+        
+        // ============================================
+        // وظائف واجهة المستخدم
+        // ============================================
+        
+        // تبديل الصفحات
+        function showPage(pageId) {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'none';
+            
+            document.getElementById(pageId).style.display = 'block';
+        }
+        
+        // تحديث بيانات المستخدم على الصفحة
+        function updateUserDisplay() {
+            const user = AuthSystem.getUser() || appData.user;
+            
+            document.getElementById('user-name').textContent = user.name;
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('contacts-count').textContent = appData.contacts.length;
+            document.getElementById('messages-count').textContent = appData.messages.length;
+            
+            // حساب الوقت المتبقي للتفتيش
+            const nextDate = new Date(appData.nextInspection);
+            const now = new Date();
+            const diffTime = nextDate - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const diffMonths = Math.floor(diffDays / 30);
+            
+            document.getElementById('next-inspection').textContent = 
+                diffMonths > 0 ? `${diffMonths} أشهر` : `${diffDays} أيام`;
+        }
+        
+        // عرض الإشعارات
+        function showNotification(message, duration = 4000) {
+            const notification = document.getElementById('notification');
+            const notificationMessage = document.getElementById('notification-message');
+            
+            notificationMessage.innerHTML = message;
+            notification.classList.add('show');
+            
+            clearTimeout(notification.timeout);
+            notification.timeout = setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+            
+            return notification;
+        }
+        
+        function closeNotification() {
+            document.getElementById('notification').classList.remove('show');
+        }
+        
+        // ============================================
+        // وظائف لوحة التحكم
+        // ============================================
+        
+        // الانتقال لإضافة جهات الاتصال
+        function goToAddContacts(type) {
+            showNotification(`
+                <div style="margin-bottom: 10px;">
+                    <i class="fas fa-user-plus" style="color: #4A90E2;"></i>
+                    <strong> إضافة جهات اتصال جديدة</strong>
+                </div>
+                <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <p>سيتم توجيهك إلى صفحة إضافة ${type === 'phone' ? 'أرقام الهواتف' : type === 'social' ? 'حسابات التواصل الاجتماعي' : 'عناوين البريد'}</p>
+                    <p style="color: #4A90E2; margin-top: 10px;">
+                        <i class="fas fa-spinner fa-spin"></i> جاري التوجيه...
+                    </p>
+                </div>
+            `, 2000);
+        }
+        
+        // الانتقال لتسجيل الرسائل
+        function goToRecordMessages() {
+            if (appData.contacts.length === 0) {
+                showNotification(`
+                    <div style="margin-bottom: 10px;">
+                        <i class="fas fa-exclamation-triangle" style="color: #ff9800;"></i>
+                        <strong> ⚠️ لا توجد جهات اتصال</strong>
+                    </div>
+                    <div style="background: #fff8e1; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                        <p>يجب إضافة جهات اتصال أولاً قبل تسجيل الرسائل.</p>
+                        <button onclick="addDemoContact()" style="background: #4A90E2; color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                            <i class="fas fa-plus"></i> أضف جهات اتصال الآن
+                        </button>
+                    </div>
+                `, 5000);
+                return;
+            }
+            
+            showNotification('جارٍ التوجيه إلى صفحة تسجيل الرسائل...', 2000);
+        }
+        
+        // عرض جهات الاتصال المضافة
+        function viewContacts() {
+            if (appData.contacts.length === 0) {
+                showNotification('لا توجد جهات اتصال مضافة بعد. أضف جهات اتصال أولاً.', 3000);
+                return;
+            }
+            
+            let contactsList = '<div style="max-height: 300px; overflow-y: auto; margin-top: 15px;">';
+            appData.contacts.forEach((contact, index) => {
+                contactsList += `
+                    <div style="background: #f8fbff; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-right: 3px solid #4A90E2;">
+                        <strong>${contact.name}</strong> - ${contact.type === 'phone' ? '📱 ' + contact.number : '👥 ' + contact.username}
+                    </div>
+                `;
+            });
+            contactsList += '</div>';
+            
+            showNotification(`
+                <div style="margin-bottom: 10px;">
+                    <i class="fas fa-users" style="color: #4A90E2;"></i>
+                    <strong> جهات الاتصال المضافة (${appData.contacts.length})</strong>
+                </div>
+                ${contactsList}
+            `, 6000);
+        }
+        
+        // تسجيل الخروج
+        function logout() {
+            showNotification(`
+                <div style="margin-bottom: 10px;">
+                    <i class="fas fa-sign-out-alt" style="color: #4A90E2;"></i>
+                    <strong> تأكيد تسجيل الخروج</strong>
+                </div>
+                <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <p>هل أنت متأكد من تسجيل الخروج؟</p>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button onclick="confirmLogout()" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; flex: 1;">
+                            <i class="fas fa-check"></i> نعم، سجل خروج
+                        </button>
+                        <button onclick="closeNotification()" style="background: #7F8C8D; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; flex: 1;">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                    </div>
+                </div>
+            `, 10000);
+        }
+        
+        function confirmLogout() {
+            AuthSystem.logout();
+            showNotification('جارٍ تسجيل الخروج...', 1500);
+            setTimeout(() => {
+                showPage('loginPage');
+            }, 1500);
+        }
+        
+        // ============================================
+        // وظائف مساعدة
+        // ============================================
+        
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+            
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+        
+        // إضافة جهة اتصال وهمية للعرض
+        function addDemoContact() {
+            appData.contacts.push({
+                type: 'phone',
+                name: 'محمد أحمد',
+                number: '+966501234567',
+                country: 'السعودية'
+            });
+            updateUserDisplay();
+            showNotification('تم إضافة جهة اتصال تجريبية بنجاح!', 3000);
+        }
+        
+        // إضافة رسالة وهمية للعرض
+        function addDemoMessage() {
+            appData.messages.push({
+                title: 'رسالة لأمي',
+                duration: '2:30',
+                date: new Date().toLocaleDateString('ar-SA')
+            });
+            updateUserDisplay();
+            showNotification('تم إضافة رسالة تجريبية بنجاح!', 3000);
+        }
+        
+        // ============================================
+        // معالجة تسجيل الدخول
+        // ============================================
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const loginBtn = document.getElementById('loginButton');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            // إخفاء أي خطأ سابق
+            errorMessage.classList.remove('show');
+            
+            // التحقق من المدخلات
+            if (!email || !password) {
+                showError('يرجى ملء جميع الحقول');
+                return;
+            }
+            
+            // تغيير حالة الزر لإظهار التحميل
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تسجيل الدخول...';
+            loginBtn.disabled = true;
+            
+            // محاكاة الاتصال بالخادم
+            setTimeout(() => {
+                const result = AuthSystem.login(email, password);
+                
+                if (result.success) {
+                    // إضافة بيانات تجريبية
+                    appData.user = result.user;
+                    
+                    // إضافة بيانات تجريبية
+                    addDemoContact();
+                    addDemoMessage();
+                    
+                    // عرض لوحة التحكم
+                    updateUserDisplay();
+                    showPage('dashboardPage');
+                    
+                    // إظهار رسالة ترحيب
+                    setTimeout(() => {
+                        showNotification(`
+                            <div style="margin-bottom: 10px;">
+                                <i class="fas fa-door-open" style="color: #50E3C2;"></i>
+                                <strong> مرحباً بعودتك إلى لوحة التحكم!</strong>
+                            </div>
+                            <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                                <p>يمكنك البدء بإضافة جهات اتصال أو تسجيل رسائلك.</p>
+                            </div>
+                        `, 5000);
+                    }, 1000);
+                } else {
+                    showError('فشل تسجيل الدخول. تحقق من البيانات وحاول مرة أخرى.');
+                    loginBtn.innerHTML = originalText;
+                    loginBtn.disabled = false;
+                }
+            }, 1500);
+        });
+        
+        // ============================================
+        // التهيئة عند تحميل الصفحة
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 النظام جاهز للعمل');
+            
+            // التحقق من تسجيل الدخول السابق
+            if (AuthSystem.isAuthenticated()) {
+                console.log('✅ المستخدم مسجل مسبقاً');
+                appData.user = AuthSystem.getUser();
+                updateUserDisplay();
+                showPage('dashboardPage');
+            } else {
+                console.log('❌ لا يوجد مستخدم مسجل');
+                showPage('loginPage');
+            }
+            
+            // اختصارات لوحة المفاتيح
+            document.addEventListener('keydown', function(e) {
+                // زر Enter لتسجيل الدخول
+                if (e.key === 'Enter' && !document.getElementById('loginButton').disabled) {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                }
+                
+                // Ctrl+D لملء بيانات تجريبية
+                if (e.ctrlKey && e.key === 'd') {
+                    e.preventDefault();
+                    document.getElementById('email').value = 'ahmed@example.com';
+                    document.getElementById('password').value = '123456';
+                }
+                
+                // ESC لإغلاق الإشعارات
+                if (e.key === 'Escape') {
+                    closeNotification();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
